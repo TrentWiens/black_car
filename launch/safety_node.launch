@@ -1,0 +1,5 @@
+<launch> 
+
+	<node pkg="black_car" name = "safety" type="trentwiens_safety.py"/>
+
+</launch>
