@@ -15,9 +15,12 @@ class Safety(object):
 		self.speed = 0.5
 #		self.odom = rospy.Subscriber("odom", Odometry, self.odom_callback)
 		self.scan = rospy.Subscriber("scan", LaserScan, self.scan_callback)
-		self.brakePub = rospy.Publisher("/vesc/high_level/ackermann_cmd_mux/input/nav_0", AckermannDriveStamped, queue_size = 10)
+		self.drive = rospy.Publisher("/vesc/high_level/ackermann_cmd_mux/input/nav_0", AckermannDriveStamped, queue_size = 10)
 #		self.brakePub = rospy.Publisher("brake", AckermannDriveStamped, queue_size = 10)
 #		self.brakeBoolPub = rospy.Publisher("brake_bool", Bool, queue_size = 10)
+		self.ackMsg = AckermannDriveStamped()
+		self.ackMsg.speed = 0.5
+		self.drive.publish(self.ackMsg) 
 		
 #	def odom_callback(self, odom_msg):
 
@@ -42,10 +45,8 @@ class Safety(object):
 		if smallestTTC < minTTC: 
 #			brake_bool = True
 #			self.brakeBoolPub.publish(brake_bool)
-			ackMsg = AckermannDriveStamped()
-			ackMsg.header = scan_msg.header
-			ackMsg.drive.speed = 0
-			self.brakePub.publish(ackMsg)
+			self.ackMsg.speed = 0
+			self.drive.publish(self.ackMsg)
 		else: 
 #			brake_bool = False
 #			self.brakeBoolPub.publish(brake_bool)
