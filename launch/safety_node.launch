@@ -1,5 +1,9 @@
 <launch> 
-
+	
+	<rosparam command="load" file="$(find black_car)/settings.yaml"/>
+	
 	<node pkg="black_car" name = "safety" type="trentwiens_safety.py"/>
+	
+	<node pkg ="rosbag" name="record" type="record" args="record -o ../trent_ttcbag /TTC /minTTC" />
 
 </launch>

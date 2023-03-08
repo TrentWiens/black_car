@@ -5,7 +5,7 @@ import numpy as np
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import LaserScan
 from ackermann_msgs.msg import AckermannDriveStamped, AckermannDrive
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, Float32
 
 
 class Safety(object):
@@ -18,6 +18,8 @@ class Safety(object):
 		self.drive = rospy.Publisher("/vesc/high_level/ackermann_cmd_mux/input/nav_0", AckermannDriveStamped, queue_size = 10)
 #		self.brakePub = rospy.Publisher("brake", AckermannDriveStamped, queue_size = 10)
 #		self.brakeBoolPub = rospy.Publisher("brake_bool", Bool, queue_size = 10)
+		self.TTCPub = rospy.Publisher("TTC", Float32, queue_size = 10)
+		self.TTCminPub = rospy.Publisher("minTTC", Float32, queue_size = 10) 
 		self.ackMsg = AckermannDriveStamped()
 		self.ackMsg.speed = 0.5
 		self.drive.publish(self.ackMsg) 
@@ -33,7 +35,7 @@ class Safety(object):
 		ranges = scan_msg.ranges
 		speed = self.speed
 		minTTC = .4
-		smallestTTC = 100
+		smallestTTC = 1
 		
 		smallRange = min(ranges)
 		index = ranges.index(smallRange)
@@ -41,6 +43,9 @@ class Safety(object):
 		rDot = np.cos(angle) * speed
 		if rDot > 0 and smallRange/rDot < smallestTTC: 
 			smallestTTC = smallRange/rDot
+			
+		self.TTCPub.publish(smallestTTC)
+		self.TTCminPub.publish(minTTC) 
 			
 		if smallestTTC < minTTC: 
 #			brake_bool = True
@@ -50,6 +55,8 @@ class Safety(object):
 		else: 
 #			brake_bool = False
 #			self.brakeBoolPub.publish(brake_bool)
+
+		
 				
 def main():
 	rospy.init_node('safety_node')
