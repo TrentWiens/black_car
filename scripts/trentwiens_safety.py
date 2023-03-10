@@ -34,15 +34,29 @@ class Safety(object):
 		incAngle = scan_msg.angle_increment
 		ranges = scan_msg.ranges
 		speed = self.speed
-		minTTC = .4
-		smallestTTC = 1
+		minTTC = .7
+		smallestTTC = 1000
 		
-		smallRange = min(ranges)
-		index = ranges.index(smallRange)
-		angle = minAngle + incAngle * index
-		rDot = np.cos(angle) * speed
-		if rDot > 0 and smallRange/rDot < smallestTTC: 
-			smallestTTC = smallRange/rDot
+		a = 0
+		for i in ranges:
+			if not (np.isinf(i) or np.isnan(i)):
+				angle = minAngle + incAngle * a
+				projSpeed = speed * np.cos(angle) 
+				projSpeed = max(projSpeed, 0)
+				if not projSpeed == 0:
+					TTC = i/projSpeed
+				else: 
+					TTC = 1000
+				if TTC < smallestTTC: 
+					smallestTTC = TTC
+			a = a + 1
+		
+#		smallRange = min(ranges)
+#		index = ranges.index(smallRange)
+#		angle = minAngle + incAngle * index
+#		rDot = np.cos(angle) * speed
+#		if rDot > 0 and smallRange/rDot < smallestTTC: 
+#			smallestTTC = smallRange/rDot
 			
 		self.TTCPub.publish(smallestTTC)
 		self.TTCminPub.publish(minTTC) 
@@ -51,8 +65,8 @@ class Safety(object):
 #			brake_bool = True
 #			self.brakeBoolPub.publish(brake_bool)
 			self.ackMsg.speed = 0
-			self.drive.publish(self.ackMsg)
-		else: 
+			
+		self.drive.publish(self.ackMsg)
 #			brake_bool = False
 #			self.brakeBoolPub.publish(brake_bool)
 
