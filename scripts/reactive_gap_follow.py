@@ -37,8 +37,8 @@ class reactive_follow_gap:
 
         proc_ranges = []
         i = 0
-        maxDist = 10
-        minDist = 1
+        maxDist = 3
+        minDist = .5
         
         for r in ranges:
             if front_angles[i]:
