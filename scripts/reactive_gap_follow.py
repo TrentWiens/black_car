@@ -150,12 +150,12 @@ class reactive_follow_gap:
             
         steeringAngleDeg = steeringAngle * 180/math.pi
         
-        if minPoint > 4: 
-            velocity = .5
-        else:
-            velocity = 1
+        #if minPoint > 4: 
+         #   velocity = .5
+        #else:
+         #   velocity = 1
 
-        
+        velocity = 1
         
         drive_msg = AckermannDriveStamped()
         drive_msg.header.stamp = rospy.Time.now()
