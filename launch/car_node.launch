@@ -1,7 +1,6 @@
 <launch>
     <rosparam command="load" file="$(find black_car)/settings.yaml"/>
     
-	<node pkg="black_car" name = "safety" type="wall_follow_real.py"/>
+	<node pkg="black_car" name = "gap_follow" type="reactive_gap_follow.py"/>
 	
-	<node pkg ="rosbag" name="record" type="record" args="record -o ../trent_ttcbag /distance /ref_dist" />
 </launch>
