@@ -71,7 +71,7 @@ class reactive_follow_gap:
             currentStart = currentIndex
             currentSize = 0
             
-            while currentIndex < len(ranges) and ranges[currentIndex] > .1:
+            while currentIndex < len(ranges) and ranges[currentIndex] > 1.0:
                 currentSize = currentSize + 1
                 currentIndex = currentIndex + 1
                 
@@ -146,7 +146,7 @@ class reactive_follow_gap:
         
         midPoint = len(ranges)/2
 
-        steeringAngle = angInc * (midPoint + pointInd) - 2 * np.pi
+        steeringAngle = angInc * (midPoint - pointInd)
             
         steeringAngleDeg = steeringAngle * 180/math.pi
         
